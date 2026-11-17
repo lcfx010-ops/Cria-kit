@@ -1,1 +1,174 @@
 
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CriaKit - Ferramentas Online</title>
+<style>
+*{box-sizing:border-box}
+body{margin:0;background:#0b1020;color:white;font-family:Arial,sans-serif}
+header{padding:22px 7%;display:flex;justify-content:space-between;align-items:center}
+.logo{font-size:27px;font-weight:bold;color:white}
+.logo span{color:#8875ff}
+.hero{text-align:center;padding:65px 20px}
+h1{font-size:clamp(35px,7vw,60px);margin-bottom:15px}
+h1 span{color:#8875ff}
+p{color:#aab3c9;line-height:1.6}
+.search{max-width:500px;margin:25px auto;display:flex;gap:8px}
+input,textarea{background:#18223a;border:1px solid #34405a;color:white;padding:14px;border-radius:9px;width:100%;font-size:15px}
+button{background:#7965ff;border:0;color:white;padding:13px 18px;border-radius:9px;font-weight:bold;cursor:pointer}
+main{max-width:1050px;margin:auto;padding:20px}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:17px}
+.card{background:#141e33;border:1px solid #293650;border-radius:15px;padding:22px}
+.card h3{margin-top:5px}
+.card p{font-size:14px}
+.card button{width:100%;margin-top:10px}
+.tool{display:none;background:#141e33;padding:22px;border-radius:15px;margin:25px auto;max-width:500px}
+.tool input,.tool textarea{margin:10px 0}
+.result{background:#0b1020;padding:14px;border-radius:9px;margin-top:12px;overflow-wrap:anywhere}
+footer{text-align:center;padding:35px;color:#8490aa}
+</style>
+</head>
+<body>
+
+<header>
+<div class="logo">Cria<span>Kit</span></div>
+<div>Ferramentas gratuitas</div>
+</header>
+
+<section class="hero">
+<h1>Suas ferramentas <span>em um só lugar.</span></h1>
+<p>Ferramentas online gratuitas, rápidas e fáceis de usar.</p>
+<div class="search">
+<input id="search" placeholder="Pesquisar ferramenta..." oninput="filter()">
+</div>
+</section>
+
+<main>
+<h2>Explore nossas ferramentas</h2>
+<div class="grid" id="grid">
+
+<div class="card" data-name="contador de texto palavras caracteres">
+<h3>📝 Contador de texto</h3>
+<p>Conte palavras e caracteres.</p>
+<button onclick="openTool('counter')">Abrir ferramenta</button>
+</div>
+
+<div class="card" data-name="calculadora matemática">
+<h3>🧮 Calculadora</h3>
+<p>Faça cálculos rapidamente.</p>
+<button onclick="openTool('calc')">Abrir ferramenta</button>
+</div>
+
+<div class="card" data-name="porcentagem desconto">
+<h3>📊 Porcentagem</h3>
+<p>Calcule porcentagens e descontos.</p>
+<button onclick="openTool('percent')">Abrir ferramenta</button>
+</div>
+
+<div class="card" data-name="gerador de senhas">
+<h3>🔐 Gerador de senhas</h3>
+<p>Crie senhas aleatórias.</p>
+<button onclick="openTool('password')">Abrir ferramenta</button>
+</div>
+
+</div>
+
+<section class="tool" id="counter">
+<h2>📝 Contador de texto</h2>
+<textarea id="txt" placeholder="Digite seu texto..." oninput="count()"></textarea>
+<div class="result" id="countResult">0 palavras | 0 caracteres</div>
+<button onclick="closeTool()">Fechar</button>
+</section>
+
+<section class="tool" id="calc">
+<h2>🧮 Calculadora</h2>
+<input type="number" id="a" placeholder="Primeiro número">
+<input type="number" id="b" placeholder="Segundo número">
+<select id="op" style="width:100%;padding:12px;background:#18223a;color:white;border-radius:9px">
+<option value="+">Somar (+)</option>
+<option value="-">Subtrair (-)</option>
+<option value="*">Multiplicar (×)</option>
+<option value="/">Dividir (÷)</option>
+</select>
+<button onclick="calculate()" style="margin-top:12px">Calcular</button>
+<div class="result" id="calcResult">Resultado aparecerá aqui.</div>
+<button onclick="closeTool()">Fechar</button>
+</section>
+
+<section class="tool" id="percent">
+<h2>📊 Calculadora de porcentagem</h2>
+<input type="number" id="total" placeholder="Valor total">
+<input type="number" id="pct" placeholder="Porcentagem (%)">
+<button onclick="percentage()">Calcular</button>
+<div class="result" id="pctResult">Resultado aparecerá aqui.</div>
+<button onclick="closeTool()">Fechar</button>
+</section>
+
+<section class="tool" id="password">
+<h2>🔐 Gerador de senhas</h2>
+<input type="number" id="length" value="16" min="8" max="64">
+<button onclick="generate()">Gerar senha</button>
+<div class="result" id="passResult">Sua senha aparecerá aqui.</div>
+<button onclick="copyPass()">Copiar senha</button>
+<button onclick="closeTool()">Fechar</button>
+</section>
+
+</main>
+
+<footer>© 2026 CriaKit — Ferramentas gratuitas para todos.</footer>
+
+<script>
+function filter(){
+let q=document.getElementById('search').value.toLowerCase();
+document.querySelectorAll('.card').forEach(c=>{
+c.style.display=c.dataset.name.includes(q)?'block':'none';
+});
+}
+function openTool(id){
+document.querySelectorAll('.tool').forEach(t=>t.style.display='none');
+document.getElementById(id).style.display='block';
+document.getElementById(id).scrollIntoView({behavior:'smooth'});
+}
+function closeTool(){
+document.querySelectorAll('.tool').forEach(t=>t.style.display='none');
+}
+function count(){
+let s=document.getElementById('txt').value;
+let words=s.trim()?s.trim().split(/\s+/).length:0;
+document.getElementById('countResult').textContent=
+words+' palavras | '+s.length+' caracteres';
+}
+function calculate(){
+let a=Number(document.getElementById('a').value);
+let b=Number(document.getElementById('b').value);
+let op=document.getElementById('op').value;
+if(document.getElementById('a').value===''||document.getElementById('b').value==='')return alert('Preencha os números.');
+if(op==='/'&&b===0)return alert('Não é possível dividir por zero.');
+document.getElementById('calcResult').textContent='Resultado: '+({'+':a+b,'-':a-b,'*':a*b,'/':a/b}[op]);
+}
+function percentage(){
+let a=document.getElementById('total').value;
+let b=document.getElementById('pct').value;
+if(a===''||b==='')return alert('Preencha os campos.');
+document.getElementById('pctResult').textContent=(Number(a)*Number(b)/100).toFixed(2);
+}
+function generate(){
+let n=Number(document.getElementById('length').value);
+if(!Number.isInteger(n)||n<8||n>64)return alert('Escolha entre 8 e 64 caracteres.');
+let chars='ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz23456789!@#$%';
+let values=new Uint32Array(n);
+crypto.getRandomValues(values);
+let pass=Array.from(values,v=>chars[v%chars.length]).join('');
+document.getElementById('passResult').textContent=pass;
+}
+function copyPass(){
+let p=document.getElementById('passResult').textContent;
+if(p==='Sua senha aparecerá aqui.')return alert('Gere uma senha primeiro.');
+navigator.clipboard.writeText(p).then(()=>alert('Senha copiada!'));
+}
+</script>
+</body>
+  </html>
+
